@@ -263,7 +263,16 @@ class IMP implements MouseListener{
      resetPicture();
   }
   
-
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   private void quit()
