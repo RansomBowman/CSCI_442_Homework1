@@ -95,14 +95,30 @@ class IMP implements MouseListener{
      JMenu fun = new JMenu("Functions");
      
      JMenuItem firstItem = new JMenuItem("MyExample - fun1 method");
-    
+     JMenuItem secondItem = new JMenuItem("Rotate 90 Method");
+     JMenuItem thirdItem = new JMenuItem("Grayscale via luminosity");
+
+
+
+
+
+
      firstItem.addActionListener(new ActionListener(){
             @Override
           public void actionPerformed(ActionEvent evt){fun1();}
            });
-   
-       
+     secondItem.addActionListener(new ActionListener(){
+            @Override
+          public void actionPerformed(ActionEvent evt){rotate90();}
+           });    
+     thirdItem.addActionListener(new ActionListener(){
+            @Override
+          public void actionPerformed(ActionEvent evt){grayscale();}
+           });
+
       fun.add(firstItem);
+      fun.add(secondItem);
+      fun.add(thirdItem);
      
       return fun;   
 
@@ -247,24 +263,53 @@ class IMP implements MouseListener{
   private void fun1()
   {
      
-    for(int i=0; i<height; i++)
-       for(int j=0; j<width; j++)
-       {   
-          int rgbArray[] = new int[4];
+   for(int i=0; i<height; i++)
+      for(int j=0; j<width; j++)
+      {   
+         int rgbArray[] = new int[4];
+      
+         //get three ints for R, G and B
+         rgbArray = getPixelArray(picture[i][j]);
          
-          //get three ints for R, G and B
-          rgbArray = getPixelArray(picture[i][j]);
+      
+      
+         rgbArray[1] = 0;
          
-        
-           rgbArray[1] = 0;
-           //take three ints for R, G, B and put them back into a single int
-           picture[i][j] = getPixels(rgbArray);
-        } 
-     resetPicture();
+         //take three ints for R, G, B and put them back into a single int
+         picture[i][j] = getPixels(rgbArray);
+      } 
+   resetPicture();
   }
   
   
-  
+   private void rotate90(){
+      secArray = new int[row][height];
+
+      for(int i=0; i<height; i++)
+         for(int j=0; j<width; j++)
+         {   
+            int rgbArray[] = new int[4];
+         
+            //get three ints for R, G and B
+            rgbArray = getPixelArray(picture[i][j]);
+            temp = getPixelArray(picture[i][j]);
+
+
+            
+         
+         
+            //rgbArray[1] = 0;
+            
+            //take three ints for R, G, B and put them back into a single int
+            picture[i][j] = getPixels(rgbArray);
+            
+         }
+      resetPicture();
+   }
+
+  private void grayscale(){
+      //grayscale
+  }
   
   
   
