@@ -116,9 +116,9 @@ class IMP implements MouseListener{
             @Override
          public void actionPerformed(ActionEvent evt){grayscale();}
       });
-      thirdItem.addActionListener(new ActionListener(){
+      fourthItem.addActionListener(new ActionListener(){
             @Override
-         public void actionPerformed(ActionEvent evt){grayscale();}
+         public void actionPerformed(ActionEvent evt){grayBlur();}
       });
 
       fun.add(firstItem);
@@ -296,8 +296,8 @@ class IMP implements MouseListener{
       //    {   
       //        secArray[i][j] = picture[i][j];
       //    }
-      System.out.println(secArray);
-      System.out.println(picture);
+      //System.out.println(secArray);
+      //System.out.println(picture);
       for(int i=0; i<height; i++)
          for(int j=0; j<width; j++)
          {   
@@ -316,24 +316,24 @@ class IMP implements MouseListener{
             
             
          }
-         for(int i=0; i<height; i++)
-            for(int j=0; j<width; j++){   
-               int rgbArray[] = new int[4];
-               getPixelArray(picture[i][j]);
+         // for(int i=0; i<height; i++)
+         //    for(int j=0; j<width; j++){   
+         //       int rgbArray[] = new int[4];
+         //       getPixelArray(picture[i][j]);
 
-               rgbArray[0] = 255;
-               rgbArray[1] = 0;
-               rgbArray[2] = 0;
-               rgbArray[3] = 0;
+         //       rgbArray[0] = 255;
+         //       rgbArray[1] = 0;
+         //       rgbArray[2] = 0;
+         //       rgbArray[3] = 0;
                
-               picture[i][j] = getPixels(rgbArray);
+         //       picture[i][j] = getPixels(rgbArray);
                
-         }
+         // }
       //resetPicture();
       picture = secArray;
       
-      System.out.println(secArray);
-      System.out.println(picture);
+      //System.out.println(secArray);
+      //System.out.println(picture);
       int tempWidth;
       tempWidth = width;
       width = height;
@@ -376,8 +376,31 @@ class IMP implements MouseListener{
       resetPicture();
   }
 
-   private void blur(){
+   private void grayBlur(){
+      grayscale();
+      int[][] secArray = new int[height][width];
+      for(int i=0; i<height; i++)
+         for(int j=0; j<width; j++)
+         {   
+            int rgbArray[] = new int[4];
+         
+            //get three ints for R, G and B
+            //rgbArray = getPixelArray(picture[i][j]);
+            
+            
+            rgbArray = getPixelArray(picture[i][j]);
+            
+            //rgbArray[1] = 0;
+            
+            //take three ints for R, G, B and put them back into a single int
+            secArray[i][j] = getPixels(rgbArray);
+            
+            
+         }
 
+
+      picture = secArray;
+      resetPicture();
    }
   
   
