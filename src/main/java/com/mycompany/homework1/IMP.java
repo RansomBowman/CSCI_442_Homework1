@@ -97,6 +97,7 @@ class IMP implements MouseListener{
      JMenuItem firstItem = new JMenuItem("MyExample - fun1 method");
      JMenuItem secondItem = new JMenuItem("Rotate 90 Method");
      JMenuItem thirdItem = new JMenuItem("Grayscale via luminosity");
+     JMenuItem fourthItem = new JMenuItem("Blur");
 
 
 
@@ -105,20 +106,25 @@ class IMP implements MouseListener{
 
      firstItem.addActionListener(new ActionListener(){
             @Override
-          public void actionPerformed(ActionEvent evt){fun1();}
-           });
+         public void actionPerformed(ActionEvent evt){fun1();}
+      });
      secondItem.addActionListener(new ActionListener(){
             @Override
-          public void actionPerformed(ActionEvent evt){rotate90();}
-           });    
+         public void actionPerformed(ActionEvent evt){rotate90();}
+      });    
      thirdItem.addActionListener(new ActionListener(){
             @Override
-          public void actionPerformed(ActionEvent evt){grayscale();}
-           });
+         public void actionPerformed(ActionEvent evt){grayscale();}
+      });
+      thirdItem.addActionListener(new ActionListener(){
+            @Override
+         public void actionPerformed(ActionEvent evt){grayscale();}
+      });
 
       fun.add(firstItem);
       fun.add(secondItem);
       fun.add(thirdItem);
+      fun.add(fourthItem);
      
       return fun;   
 
@@ -345,18 +351,34 @@ class IMP implements MouseListener{
       
    
    
-         int r = rgbArray[1] * .21;
+         double r = rgbArray[1] * .21;
          
-         int g = rgbArray[2] * .72;
-         int b = rgbArray[3] * .07;
+         double g = rgbArray[2] * .72;
+         double b = rgbArray[3] * .07;
 
+         int red, green, blue;
+
+         red = (int) Math.round(r);
+         green = (int) Math.round(g);
+         blue = (int) Math.round(b);
          
+         int lum = red + green + blue;
+         // System.out.println(r);
+         // System.out.println(red);
+
+         rgbArray[1] = lum; //red;
+         rgbArray[2] = lum; //green;
+         rgbArray[3] = lum; //blue;
       
       //take three ints for R, G, B and put them back into a single int
          picture[i][j] = getPixels(rgbArray);
       } 
       resetPicture();
   }
+
+   private void blur(){
+
+   }
   
   
   
