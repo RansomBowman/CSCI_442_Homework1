@@ -205,9 +205,9 @@ class IMP implements MouseListener{
    */
   private void resetPicture()
   {
-       for(int i=0; i<height; i++)
-       for(int j=0; j<width; j++)
-          pixels[i*width+j] = picture[i][j];
+      for(int i=0; i<height; i++)
+         for(int j=0; j<width; j++)
+            pixels[i*width+j] = picture[i][j];
       Image img2 = toolkit.createImage(new MemoryImageSource(width, height, pixels, 0, width)); 
 
       JLabel label2 = new JLabel(new ImageIcon(img2));    
@@ -283,13 +283,13 @@ class IMP implements MouseListener{
   
   
    private void rotate90(){
-      int[][] secArray = new int[height][width];
+      int[][] secArray = new int[width][height];
       
-      for(int i=0; i<height; i++)
-         for(int j=0; j<width; j++)
-         {   
-             secArray[i][j] = picture[i][j];
-         }
+      // for(int i=0; i<height; i++)
+      //    for(int j=0; j<width; j++)
+      //    {   
+      //        secArray[i][j] = picture[i][j];
+      //    }
       System.out.println(secArray);
       System.out.println(picture);
       for(int i=0; i<height; i++)
@@ -302,22 +302,60 @@ class IMP implements MouseListener{
             
             
             rgbArray = getPixelArray(picture[i][j]);
-         
+            
             //rgbArray[1] = 0;
             
             //take three ints for R, G, B and put them back into a single int
-            secArray[(height-1) - i][(width - 1) - j] = getPixels(rgbArray);
+            secArray[j][i] = getPixels(rgbArray);
             
             
          }
+         for(int i=0; i<height; i++)
+            for(int j=0; j<width; j++){   
+               int rgbArray[] = new int[4];
+               getPixelArray(picture[i][j]);
+
+               rgbArray[0] = 255;
+               rgbArray[1] = 0;
+               rgbArray[2] = 0;
+               rgbArray[3] = 0;
+               
+               picture[i][j] = getPixels(rgbArray);
+               
+         }
+      //resetPicture();
       picture = secArray;
+      
       System.out.println(secArray);
       System.out.println(picture);
+      int tempWidth;
+      tempWidth = width;
+      width = height;
+      height = tempWidth;
       resetPicture();
    }
 
   private void grayscale(){
-      //grayscale
+   for(int i=0; i<height; i++)
+      for(int j=0; j<width; j++){   
+         int rgbArray[] = new int[4];
+   
+      //get three ints for R, G and B
+         rgbArray = getPixelArray(picture[i][j]);
+      
+   
+   
+         int r = rgbArray[1] * .21;
+         
+         int g = rgbArray[2] * .72;
+         int b = rgbArray[3] * .07;
+
+         
+      
+      //take three ints for R, G, B and put them back into a single int
+         picture[i][j] = getPixels(rgbArray);
+      } 
+      resetPicture();
   }
   
   
