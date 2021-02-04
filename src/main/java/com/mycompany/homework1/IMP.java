@@ -283,13 +283,13 @@ class IMP implements MouseListener{
   
   
    private void rotate90(){
-      int[][] secArray = new int[height][width];
+      int[][] secArray = new int[width][height];
       
-      for(int i=0; i<height; i++)
-         for(int j=0; j<width; j++)
-         {   
-             secArray[i][j] = picture[i][j];
-         }
+      // for(int i=0; i<height; i++)
+      //    for(int j=0; j<width; j++)
+      //    {   
+      //        secArray[i][j] = picture[i][j];
+      //    }
       System.out.println(secArray);
       System.out.println(picture);
       for(int i=0; i<height; i++)
@@ -302,17 +302,36 @@ class IMP implements MouseListener{
             
             
             rgbArray = getPixelArray(picture[i][j]);
-         
+            
             //rgbArray[1] = 0;
             
             //take three ints for R, G, B and put them back into a single int
-            secArray[(height-1) - i][(width - 1) - j] = getPixels(rgbArray);
+            secArray[j][i] = getPixels(rgbArray);
             
             
          }
+         for(int i=0; i<height; i++)
+            for(int j=0; j<width; j++){   
+               int rgbArray[] = new int[4];
+               getPixelArray(picture[i][j]);
+
+               rgbArray[0] = 255;
+               rgbArray[1] = 0;
+               rgbArray[2] = 0;
+               rgbArray[3] = 0;
+               
+               picture[i][j] = getPixels(rgbArray);
+               
+         }
+      //resetPicture();
       picture = secArray;
+      
       System.out.println(secArray);
       System.out.println(picture);
+      int tempWidth;
+      tempWidth = width;
+      width = height;
+      height = tempWidth;
       resetPicture();
    }
 
