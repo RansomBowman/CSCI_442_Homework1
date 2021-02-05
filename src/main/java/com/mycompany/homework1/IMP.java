@@ -24,6 +24,10 @@ class IMP implements MouseListener{
    int [] pixels;
    int [] results;
    //Instance Fields you will be using below
+
+   MyPanel redPanel;
+   MyPanel greenPanel;
+   MyPanel bluePanel;
    
    //This will be your height and width of your 2d array
    int height=0, width=0;
@@ -77,8 +81,12 @@ class IMP implements MouseListener{
       start.setEnabled(false);
       start.addActionListener(new ActionListener(){
             @Override
-          public void actionPerformed(ActionEvent evt){ fun1(); }
-           });
+          public void actionPerformed(ActionEvent evt){ 
+             redPanel.drawHistogram();
+             greenPanel.drawHistogram();
+             bluePanel.drawHistogram();
+          }
+      });
       butPanel.add(start);
       frame.getContentPane().add(butPanel, BorderLayout.SOUTH);
       frame.setJMenuBar(bar);
@@ -99,7 +107,9 @@ class IMP implements MouseListener{
      JMenuItem thirdItem = new JMenuItem("Grayscale via luminosity");
      JMenuItem fourthItem = new JMenuItem("Blur");
      JMenuItem fifthItem = new JMenuItem("Edge Detection, 5 x 5 Mask");
+     JMenuItem sixthItem = new JMenuItem("Histogram");
 
+     JMenuItem eigthItem = new JMenuItem("Tracker");
 
 
 
@@ -125,12 +135,28 @@ class IMP implements MouseListener{
          @Override
       public void actionPerformed(ActionEvent evt){edgeDetection();}
       });
+      sixthItem.addActionListener(new ActionListener(){
+         @Override
+      public void actionPerformed(ActionEvent evt){histogram();}
+      });
+
+
+
+
+      eigthItem.addActionListener(new ActionListener(){
+         @Override
+      public void actionPerformed(ActionEvent evt){tracker();}
+      });
 
       fun.add(firstItem);
       fun.add(secondItem);
       fun.add(thirdItem);
       fun.add(fourthItem);
       fun.add(fifthItem);
+      fun.add(sixthItem);
+
+      fun.add(eigthItem);
+
      
       return fun;   
 
@@ -533,8 +559,136 @@ class IMP implements MouseListener{
   
   
   
+
+
+
+
+   private void histogram(){
+
+   int[] red = new int[height*width];
+   int[] green = new int[height*width];
+   int[] blue = new int[height*width];
+      
+   for(int i=0; i<height; i++)
+      for(int j=0; j<width; j++)
+      {   
+      
+         //get three ints for R, G and B
+         int targetPixel[] = new int[4];
+         targetPixel = getPixelArray(picture[i][j]);
+
+         red[i*width+j] = targetPixel[1];
+         green[i*width+j] = targetPixel[2];
+         blue[i*width+j] = targetPixel[3];
+         //System.out.println(red[i*width+j]);
+         //System.out.println(green[i*width+j]);
+         //System.out.println(blue[i*width+j]);
+
+
+         
+      }
+
+
+   //This is in my histogram function in IMP
+
+   //first count all pixel values in R and G and B array
+
+   // Then pass those arrays to MyPanel constructor
+
+   //Then when button is pushed call drawHistogram in MyPanel.....you write DrawHistogram
+
+   //Don't forget to call repaint();
+
+   
+   JFrame redFrame = new JFrame("Red");
+   redFrame.setSize(305, 600);
+   redFrame.setLocation(800, 0);
+   JFrame greenFrame = new JFrame("Green");
+   greenFrame.setSize(305, 600);
+   greenFrame.setLocation(1150, 0);
+   JFrame blueFrame = new JFrame("blue");
+   blueFrame.setSize(305, 600);
+   blueFrame.setLocation(1450, 0);
+
+   redPanel = new MyPanel(red);
+   greenPanel = new MyPanel(green);
+   bluePanel = new MyPanel(blue);
+
+   redFrame.getContentPane().add(redPanel, BorderLayout.CENTER);
+   redFrame.setVisible(true);
+   greenFrame.getContentPane().add(greenPanel, BorderLayout.CENTER);
+   greenFrame.setVisible(true);
+   blueFrame.getContentPane().add(bluePanel, BorderLayout.CENTER);
+   blueFrame.setVisible(true);
+   start.setEnabled(true);
+
+   redPanel.drawHistogram();
+   greenPanel.drawHistogram();
+   bluePanel.drawHistogram();
+
+
+   }
   
-  
+
+
+
+
+
+   private void equilizer(){
+      //later
+
+   }
+
+   private void tracker(){
+      grayscale();
+      int[][] secArray = new int[height][width];
+      
+      for(int i=0; i<height; i++)
+         for(int j=0; j<width; j++)
+         {   
+         
+            //get three ints for R, G and B
+            int targetPixel[] = new int[4];
+            targetPixel = getPixelArray(picture[i][j]);
+            
+            if(targetPixel[1]> 50 && targetPixel[1] <90 && targetPixel[90]> 50 && targetPixel[2] <120 && targetPixel[3]> 240){
+               secArray[i][j] = getPixels(targetPixel);
+            }  
+
+
+
+
+         
+
+            
+            //System.out.println(red);
+            // if(red < 20){
+            //    red = 0;
+            // }
+            // if(red >= 20){
+            //    red = 255;
+            // }
+            // if(green < 20){
+            //    green = 0;
+            // }
+            // if(green >= 20){
+            //    green = 255;
+            // }
+            // if(blue < 20){
+            //    blue = 0;
+            // }
+            // if(blue >= 20){
+            //    blue = 255;
+            // }
+            
+            //take three ints for R, G, B and put them back into a single int
+            //secArray[i][j] = getPixels(targetPixel);
+            
+         }
+      picture = secArray;
+      resetPicture();
+   }
+   
   
   
   
@@ -564,5 +718,5 @@ class IMP implements MouseListener{
    {
       IMP imp = new IMP();
    }
- 
 }
+
