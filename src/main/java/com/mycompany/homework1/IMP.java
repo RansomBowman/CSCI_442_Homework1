@@ -485,9 +485,9 @@ class IMP implements MouseListener{
 
                }
 
-            red = red/17;
-            green = green/17;
-            blue = blue/17;
+            red = -red/17;
+            green = -green/17;
+            blue = -blue/17;
             //System.out.println(red);
             if(red < 20){
                red = 0;
