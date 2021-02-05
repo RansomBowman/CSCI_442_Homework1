@@ -507,7 +507,7 @@ class IMP implements MouseListener{
             if(blue >= 20){
                blue = 255;
             }
-            int lum = red + green + blue;
+            //int lum = red + green + blue;
             //System.out.println(lum);
             // if(lum < 20){
             //    lum = 0;

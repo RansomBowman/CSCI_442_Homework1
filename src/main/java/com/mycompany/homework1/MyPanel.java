@@ -33,6 +33,7 @@ int startX, flag, startY, endX, endY;
             grid = (BufferedImage)(this.createImage(w,h));
             gc = grid.createGraphics();
 
+            
          }
          g2.drawImage(grid, null, 0, 0);
      }
