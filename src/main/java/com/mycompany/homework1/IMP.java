@@ -382,18 +382,47 @@ class IMP implements MouseListener{
       for(int i=0; i<height; i++)
          for(int j=0; j<width; j++)
          {   
-            int rgbArray[] = new int[4];
+            //int rgbArray[] = new int[4];
+
+            int topLeft[] = new int[4];
+            int topCenter[] = new int[4];
+            int topRight[] = new int[4];
+            int centerLeft[] = new int[4];
+            int centerRight[] = new int[4];
+            int bottomLeft[] = new int[4];
+            int bottomCenter[] = new int[4];
+            int bottomRight[] = new int[4];
          
             //get three ints for R, G and B
             //rgbArray = getPixelArray(picture[i][j]);
             
             
-            rgbArray = getPixelArray(picture[i][j]);
+            //rgbArray = getPixelArray(picture[i][j]);
+            
+            topLeft = getPixelArray(picture[i-1][j-1]);
+            topCenter = getPixelArray(picture[i-1][j]);
+            topRight = getPixelArray(picture[i-1][j+1]);
+            centerLeft = getPixelArray(picture[i][j-1]);
+            centerRight = getPixelArray(picture[i][j+1]);
+            bottomLeft = getPixelArray(picture[i+1][j-1]);
+            bottomCenter = getPixelArray(picture[i+1][j]);
+            bottomRight = getPixelArray(picture[i+1][j+1]);
+
+
+            red = (int) Math.round(r);
+            green = (int) Math.round(g);
+            blue = (int) Math.round(b);
+            
+            int lum = red + green + blue;         
+
+            rgbArray[1] = lum;
+            rgbArray[2] = lum;
+            rgbArray[3] = lum;
             
             //rgbArray[1] = 0;
             
             //take three ints for R, G, B and put them back into a single int
-            secArray[i][j] = getPixels(rgbArray);
+            //secArray[i][j] = getPixels(rgbArray);
             
             
          }
