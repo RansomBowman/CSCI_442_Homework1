@@ -98,11 +98,12 @@ class IMP implements MouseListener{
      JMenuItem secondItem = new JMenuItem("Rotate 90 Method");
      JMenuItem thirdItem = new JMenuItem("Grayscale via luminosity");
      JMenuItem fourthItem = new JMenuItem("Blur");
+     JMenuItem fifthItem = new JMenuItem("Edge Detection, 5 x 5 Mask");
 
 
 
 
-
+     
 
      firstItem.addActionListener(new ActionListener(){
             @Override
@@ -120,11 +121,16 @@ class IMP implements MouseListener{
             @Override
          public void actionPerformed(ActionEvent evt){grayBlur();}
       });
+      fifthItem.addActionListener(new ActionListener(){
+         @Override
+      public void actionPerformed(ActionEvent evt){edgeDetection();}
+      });
 
       fun.add(firstItem);
       fun.add(secondItem);
       fun.add(thirdItem);
       fun.add(fourthItem);
+      fun.add(fifthItem);
      
       return fun;   
 
@@ -379,51 +385,50 @@ class IMP implements MouseListener{
    private void grayBlur(){
       grayscale();
       int[][] secArray = new int[height][width];
+      
       for(int i=0; i<height; i++)
          for(int j=0; j<width; j++)
          {   
-            //int rgbArray[] = new int[4];
-
-            int topLeft[] = new int[4];
-            int topCenter[] = new int[4];
-            int topRight[] = new int[4];
-            int centerLeft[] = new int[4];
-            int centerRight[] = new int[4];
-            int bottomLeft[] = new int[4];
-            int bottomCenter[] = new int[4];
-            int bottomRight[] = new int[4];
          
             //get three ints for R, G and B
-            //rgbArray = getPixelArray(picture[i][j]);
+            int targetPixel[] = new int[4];
+            targetPixel = getPixelArray(picture[i][j]);
             
-            
-            //rgbArray = getPixelArray(picture[i][j]);
-            
-            topLeft = getPixelArray(picture[i-1][j-1]);
-            topCenter = getPixelArray(picture[i-1][j]);
-            topRight = getPixelArray(picture[i-1][j+1]);
-            centerLeft = getPixelArray(picture[i][j-1]);
-            centerRight = getPixelArray(picture[i][j+1]);
-            bottomLeft = getPixelArray(picture[i+1][j-1]);
-            bottomCenter = getPixelArray(picture[i+1][j]);
-            bottomRight = getPixelArray(picture[i+1][j+1]);
+            int red = 0, green = 0, blue = 0;   
 
 
-            red = (int) Math.round(r);
-            green = (int) Math.round(g);
-            blue = (int) Math.round(b);
-            
-            int lum = red + green + blue;         
+            for(int row= (-1); row<2; row++)
+               for(int col= (-1); col<2; col++){
+                  if((row + i) < 0 || (row + i) > (height - 1)){
+                     red += 0;
+                     green += 0;
+                     blue += 0;
+                  }else if((col + j) < 0 || (col + j) > (width - 1)){
+                     red += 0;
+                     green += 0;
+                     blue += 0;
+                  }else{
+                     int rgbArray[] = new int[4];
+                     rgbArray = getPixelArray(picture[i+row][j+col]);
 
-            rgbArray[1] = lum;
-            rgbArray[2] = lum;
-            rgbArray[3] = lum;
-            
-            //rgbArray[1] = 0;
+
+                     red += rgbArray[1];
+                     green += rgbArray[2];
+                     blue += rgbArray[3];
+                  }
+
+               }
+
+            red = red/9;
+            green = green/9;
+            blue = blue/9;       
+
+            targetPixel[1] = red;
+            targetPixel[2] = green;
+            targetPixel[3] = blue;
             
             //take three ints for R, G, B and put them back into a single int
-            //secArray[i][j] = getPixels(rgbArray);
-            
+            secArray[i][j] = getPixels(targetPixel);
             
          }
 
@@ -432,7 +437,99 @@ class IMP implements MouseListener{
       resetPicture();
    }
   
-  
+   private void edgeDetection(){
+      grayscale();
+      int[][] secArray = new int[height][width];
+      
+      for(int i=0; i<height; i++)
+         for(int j=0; j<width; j++)
+         {   
+         
+            //get three ints for R, G and B
+            int targetPixel[] = new int[4];
+            targetPixel = getPixelArray(picture[i][j]);
+            
+            int red = 0, green = 0, blue = 0;   
+
+
+            for(int row= (-2); row<3; row++)
+               for(int col= (-2); col<3; col++){
+                  if((row + i) < 0 || (row + i) > (height - 1)){
+                     red += 0;
+                     green += 0;
+                     blue += 0;
+                  }else if((col + j) < 0 || (col + j) > (width - 1)){
+                     red += 0;
+                     green += 0;
+                     blue += 0;
+                  }else if((row == 0) && (col == 0)){
+                     int rgbArray[] = new int[4];
+                     rgbArray = getPixelArray(picture[row][col]);
+
+
+                     red += rgbArray[1] * 16;
+                     green += rgbArray[2] * 16;
+                     blue += rgbArray[3] * 16;
+
+                  }else if(row == 1 || row == -1 || col == 1 || col== -1){
+                     //System.out.println("This is i:" + i); //do nothing in the 5x5 mask
+                  }else{
+                     int rgbArray[] = new int[4];
+                     rgbArray = getPixelArray(picture[i+row][j+col]);
+
+
+                     red -= rgbArray[1];
+                     green -= rgbArray[2];
+                     blue -= rgbArray[3];
+                  }
+
+               }
+
+            red = red/17;
+            green = green/17;
+            blue = blue/17;
+            //System.out.println(red);
+            if(red < 20){
+               red = 0;
+            }
+            if(red >= 20){
+               red = 255;
+            }
+            if(green < 20){
+               green = 0;
+            }
+            if(green >= 20){
+               green = 255;
+            }
+            if(blue < 20){
+               blue = 0;
+            }
+            if(blue >= 20){
+               blue = 255;
+            }
+            int lum = red + green + blue;
+            //System.out.println(lum);
+            // if(lum < 20){
+            //    lum = 0;
+            // }
+            // if(lum >= 20){
+            //    lum = 255;
+            // }
+            // System.out.println(r);
+            //System.out.println(red);
+
+
+            targetPixel[1] = red;
+            targetPixel[2] = green;
+            targetPixel[3] = blue;
+            
+            //take three ints for R, G, B and put them back into a single int
+            secArray[i][j] = getPixels(targetPixel);
+            
+         }
+      picture = secArray;
+      resetPicture();
+   }
   
   
   
