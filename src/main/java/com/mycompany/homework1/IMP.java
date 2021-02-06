@@ -110,6 +110,7 @@ class IMP implements MouseListener{
      JMenuItem sixthItem = new JMenuItem("Histogram");
 
      JMenuItem eigthItem = new JMenuItem("Tracker");
+     JMenuItem ninthItem = new JMenuItem("3x3 Mask Edge Detection");
 
 
 
@@ -147,6 +148,10 @@ class IMP implements MouseListener{
          @Override
       public void actionPerformed(ActionEvent evt){tracker();}
       });
+      ninthItem.addActionListener(new ActionListener(){
+         @Override
+      public void actionPerformed(ActionEvent evt){edgeDetection3x();}
+      });
 
       fun.add(firstItem);
       fun.add(secondItem);
@@ -156,6 +161,7 @@ class IMP implements MouseListener{
       fun.add(sixthItem);
 
       fun.add(eigthItem);
+      fun.add(ninthItem);
 
      
       return fun;   
@@ -299,8 +305,7 @@ class IMP implements MouseListener{
     * integer value so you can give it back to the program and display the new picture. 
     */
   private void fun1()
-  {
-     
+  {   
    for(int i=0; i<height; i++)
       for(int j=0; j<width; j++)
       {   
@@ -318,18 +323,11 @@ class IMP implements MouseListener{
       } 
    resetPicture();
   }
-  
-  
-   private void rotate90(){
+   
+   private void rotate90(){ //works, weird artifacting
       int[][] secArray = new int[width][height];
       
-      // for(int i=0; i<height; i++)
-      //    for(int j=0; j<width; j++)
-      //    {   
-      //        secArray[i][j] = picture[i][j];
-      //    }
-      //System.out.println(secArray);
-      //System.out.println(picture);
+
       for(int i=0; i<height; i++)
          for(int j=0; j<width; j++)
          {   
@@ -341,31 +339,13 @@ class IMP implements MouseListener{
             
             rgbArray = getPixelArray(picture[i][j]);
             
-            //rgbArray[1] = 0;
-            
             //take three ints for R, G, B and put them back into a single int
             secArray[j][i] = getPixels(rgbArray);
-            
-            
+               
          }
-         // for(int i=0; i<height; i++)
-         //    for(int j=0; j<width; j++){   
-         //       int rgbArray[] = new int[4];
-         //       getPixelArray(picture[i][j]);
 
-         //       rgbArray[0] = 255;
-         //       rgbArray[1] = 0;
-         //       rgbArray[2] = 0;
-         //       rgbArray[3] = 0;
-               
-         //       picture[i][j] = getPixels(rgbArray);
-               
-         // }
-      //resetPicture();
       picture = secArray;
-      
-      //System.out.println(secArray);
-      //System.out.println(picture);
+
       int tempWidth;
       tempWidth = width;
       width = height;
@@ -373,42 +353,37 @@ class IMP implements MouseListener{
       resetPicture();
    }
 
-  private void grayscale(){
-   for(int i=0; i<height; i++)
-      for(int j=0; j<width; j++){   
-         int rgbArray[] = new int[4];
-   
-      //get three ints for R, G and B
-         rgbArray = getPixelArray(picture[i][j]);
+   private void grayscale(){ //works
+      for(int i=0; i<height; i++)
+         for(int j=0; j<width; j++){   
+            int rgbArray[] = new int[4];
       
-   
-   
-         double r = rgbArray[1] * .21;
+         //get three ints for R, G and B
+            rgbArray = getPixelArray(picture[i][j]);
          
-         double g = rgbArray[2] * .72;
-         double b = rgbArray[3] * .07;
+            double r = rgbArray[1] * .21;
+            double g = rgbArray[2] * .72;
+            double b = rgbArray[3] * .07;
 
-         int red, green, blue;
+            int red, green, blue;
 
-         red = (int) Math.round(r);
-         green = (int) Math.round(g);
-         blue = (int) Math.round(b);
+            red = (int) Math.round(r);
+            green = (int) Math.round(g);
+            blue = (int) Math.round(b);
+            
+            int lum = red + green + blue;
+
+            rgbArray[1] = lum; //red;
+            rgbArray[2] = lum; //green;
+            rgbArray[3] = lum; //blue;
          
-         int lum = red + green + blue;
-         // System.out.println(r);
-         // System.out.println(red);
-
-         rgbArray[1] = lum; //red;
-         rgbArray[2] = lum; //green;
-         rgbArray[3] = lum; //blue;
-      
-      //take three ints for R, G, B and put them back into a single int
-         picture[i][j] = getPixels(rgbArray);
-      } 
-      resetPicture();
+         //take three ints for R, G, B and put them back into a single int
+            picture[i][j] = getPixels(rgbArray);
+         } 
+         resetPicture();
   }
 
-   private void grayBlur(){
+   private void grayBlur(){ //works
       grayscale();
       int[][] secArray = new int[height][width];
       
@@ -421,7 +396,6 @@ class IMP implements MouseListener{
             targetPixel = getPixelArray(picture[i][j]);
             
             int red = 0, green = 0, blue = 0;   
-
 
             for(int row= (-1); row<2; row++)
                for(int col= (-1); col<2; col++){
@@ -436,7 +410,6 @@ class IMP implements MouseListener{
                   }else{
                      int rgbArray[] = new int[4];
                      rgbArray = getPixelArray(picture[i+row][j+col]);
-
 
                      red += rgbArray[1];
                      green += rgbArray[2];
@@ -458,19 +431,17 @@ class IMP implements MouseListener{
             
          }
 
-
       picture = secArray;
       resetPicture();
    }
   
-   private void edgeDetection(){
+   private void edgeDetection(){ //5x5, finds edges, but seems to have a fill going on and doesn't like some pictures
       grayscale();
       int[][] secArray = new int[height][width];
       
       for(int i=0; i<height; i++)
          for(int j=0; j<width; j++)
          {   
-         
             //get three ints for R, G and B
             int targetPixel[] = new int[4];
             targetPixel = getPixelArray(picture[i][j]);
@@ -492,7 +463,6 @@ class IMP implements MouseListener{
                      int rgbArray[] = new int[4];
                      rgbArray = getPixelArray(picture[row][col]);
 
-
                      red += rgbArray[1] * 16;
                      green += rgbArray[2] * 16;
                      blue += rgbArray[3] * 16;
@@ -502,7 +472,6 @@ class IMP implements MouseListener{
                   }else{
                      int rgbArray[] = new int[4];
                      rgbArray = getPixelArray(picture[i+row][j+col]);
-
 
                      red -= rgbArray[1];
                      green -= rgbArray[2];
@@ -533,16 +502,6 @@ class IMP implements MouseListener{
             if(blue >= 20){
                blue = 255;
             }
-            //int lum = red + green + blue;
-            //System.out.println(lum);
-            // if(lum < 20){
-            //    lum = 0;
-            // }
-            // if(lum >= 20){
-            //    lum = 255;
-            // }
-            // System.out.println(r);
-            //System.out.println(red);
 
 
             targetPixel[1] = red;
@@ -557,13 +516,8 @@ class IMP implements MouseListener{
       resetPicture();
    }
   
-  
-  
 
-
-
-
-   private void histogram(){
+   private void histogram(){ //works on some pictures but doesn't seem to on others
 
    int[] red = new int[height*width];
    int[] green = new int[height*width];
@@ -580,14 +534,8 @@ class IMP implements MouseListener{
          red[i*width+j] = targetPixel[1];
          green[i*width+j] = targetPixel[2];
          blue[i*width+j] = targetPixel[3];
-         //System.out.println(red[i*width+j]);
-         //System.out.println(green[i*width+j]);
-         //System.out.println(blue[i*width+j]);
-
-
          
       }
-
 
    //This is in my histogram function in IMP
 
@@ -598,7 +546,6 @@ class IMP implements MouseListener{
    //Then when button is pushed call drawHistogram in MyPanel.....you write DrawHistogram
 
    //Don't forget to call repaint();
-
    
    JFrame redFrame = new JFrame("Red");
    redFrame.setSize(305, 600);
@@ -626,7 +573,6 @@ class IMP implements MouseListener{
    greenPanel.drawHistogram();
    bluePanel.drawHistogram();
 
-
    }
   
 
@@ -635,12 +581,12 @@ class IMP implements MouseListener{
 
 
    private void equilizer(){
-      //later
+      //if time
 
    }
 
-   private void tracker(){
-      grayscale();
+   private void tracker(){// works
+      //Tracks neon sky blue. Weird color but had a fun picture with highlights like that
       int[][] secArray = new int[height][width];
       
       for(int i=0; i<height; i++)
@@ -649,47 +595,105 @@ class IMP implements MouseListener{
          
             //get three ints for R, G and B
             int targetPixel[] = new int[4];
+            int blackArray[] = {0,0,0,0};
+            int whiteArray[] = {255,255,255,255};
+
+
+
             targetPixel = getPixelArray(picture[i][j]);
-            
-            if(targetPixel[1]> 50 && targetPixel[1] <90 && targetPixel[90]> 50 && targetPixel[2] <120 && targetPixel[3]> 240){
-               secArray[i][j] = getPixels(targetPixel);
+            //System.out.println(targetPixel[3]);
+            if(targetPixel[1] < 50 && targetPixel[2] > 180 && targetPixel[3] > 180){  //Neon sky blue
+               
+               //secArray[i][j] = getPixels(targetPixel); For fun color highlights
+               secArray[i][j] = getPixels(whiteArray);
+            }else{
+               secArray[i][j] = getPixels(blackArray);
             }  
 
-
-
-
-         
-
-            
-            //System.out.println(red);
-            // if(red < 20){
-            //    red = 0;
-            // }
-            // if(red >= 20){
-            //    red = 255;
-            // }
-            // if(green < 20){
-            //    green = 0;
-            // }
-            // if(green >= 20){
-            //    green = 255;
-            // }
-            // if(blue < 20){
-            //    blue = 0;
-            // }
-            // if(blue >= 20){
-            //    blue = 255;
-            // }
-            
-            //take three ints for R, G, B and put them back into a single int
-            //secArray[i][j] = getPixels(targetPixel);
             
          }
       picture = secArray;
       resetPicture();
    }
    
-  
+  private void edgeDetection3x(){ //much better than the 5x5, seems to work properly
+   grayscale();
+   int[][] secArray = new int[height][width];
+   
+   for(int i=0; i<height; i++)
+      for(int j=0; j<width; j++)
+      {   
+         //get three ints for R, G and B
+         int targetPixel[] = new int[4];
+         targetPixel = getPixelArray(picture[i][j]);
+         
+         int red = 0, green = 0, blue = 0;   
+
+
+         for(int row= (-1); row<2; row++)
+            for(int col= (-1); col<2; col++){
+               if((row + i) < 0 || (row + i) > (height - 1)){
+                  red += 0;
+                  green += 0;
+                  blue += 0;
+               }else if((col + j) < 0 || (col + j) > (width - 1)){
+                  red += 0;
+                  green += 0;
+                  blue += 0;
+               }else if((row == 0) && (col == 0)){
+                  int rgbArray[] = new int[4];
+                  rgbArray = getPixelArray(picture[row][col]);
+
+                  red += rgbArray[1] * 8;
+                  green += rgbArray[2] * 8;
+                  blue += rgbArray[3] * 8;
+
+               }else{
+                  int rgbArray[] = new int[4];
+                  rgbArray = getPixelArray(picture[i+row][j+col]);
+
+                  red -= rgbArray[1];
+                  green -= rgbArray[2];
+                  blue -= rgbArray[3];
+               }
+
+            }
+
+         red = red/9;
+         green = green/9;
+         blue = blue/9;
+         //System.out.println(red);
+         if(red < 10){
+            red = 0;
+         }
+         if(red >= 10){
+            red = 255;
+         }
+         if(green < 10){
+            green = 0;
+         }
+         if(green >= 10){
+            green = 255;
+         }
+         if(blue < 10){
+            blue = 0;
+         }
+         if(blue >= 10){
+            blue = 255;
+         }
+
+
+         targetPixel[1] = red;
+         targetPixel[2] = green;
+         targetPixel[3] = blue;
+         
+         //take three ints for R, G, B and put them back into a single int
+         secArray[i][j] = getPixels(targetPixel);
+         
+      }
+   picture = secArray;
+   resetPicture();
+  }
   
   
   private void quit()
