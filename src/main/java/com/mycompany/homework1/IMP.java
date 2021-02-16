@@ -163,6 +163,23 @@ class IMP implements MouseListener{
       fun.add(eigthItem);
       fun.add(ninthItem);
 
+
+      JMenuItem firstQuizItem = new JMenuItem("Quiz one");
+      JMenuItem secondQuizItem = new JMenuItem("Quiz two");
+
+      firstQuizItem.addActionListener(new ActionListener(){
+         @Override
+      public void actionPerformed(ActionEvent evt){firstQuiz();}
+      });
+      secondQuizItem.addActionListener(new ActionListener(){
+         @Override
+      public void actionPerformed(ActionEvent evt){secondQuiz();}
+      });
+
+      fun.add(firstQuizItem);
+      fun.add(secondQuizItem);
+
+
      
       return fun;   
 
@@ -694,6 +711,62 @@ class IMP implements MouseListener{
    picture = secArray;
    resetPicture();
   }
+
+  public void firstQuiz(){
+   //Tracks neon sky blue. Weird color but had a fun picture with highlights like that
+   int[][] secArray = new int[height][width];
+    
+   for(int i=0; i<height; i++)
+      for(int j=0; j<width; j++)
+      {   
+      
+         //get three ints for R, G and B
+         int targetPixel[] = new int[4];
+         int blackArray[] = {0,0,0,0};
+         if (j%4 == 0){
+            secArray[i][j] = getPixels(blackArray);
+         }else{
+            secArray[i][j] = picture[i][j];
+         }
+
+         
+      }
+   picture = secArray;
+   resetPicture();
+}
+
+public void secondQuiz(){
+   grayscale();
+
+   int[][] secArray = new int[height][width];
+      
+     for(int i=0; i<height; i++)
+        for(int j=0; j<width; j++)
+        {   
+        
+         int targetPixel[] = new int[4];
+         int blackArray[] = {0,0,0,0};
+         int whiteArray[] = {255,255,255,255};
+
+
+
+         targetPixel = getPixelArray(picture[i][j]);
+         //System.out.println(targetPixel[3]);
+         if(targetPixel[0] > 200 && targetPixel[1] > 200 && targetPixel[2] > 200 && targetPixel[3] > 200){  
+            
+            //secArray[i][j] = getPixels(targetPixel); For fun color highlights
+            secArray[i][j] = getPixels(blackArray);
+            
+         }else{
+            secArray[i][j] = getPixels(whiteArray);
+         }  
+
+           
+        }
+     picture = secArray;
+     resetPicture();
+
+}
   
   
   private void quit()
